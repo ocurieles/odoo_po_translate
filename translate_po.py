@@ -1,39 +1,56 @@
-from googletrans import Translator
+from translate import Translator
 
 def translate_po(input_file, output_file, src_lang='en', dest_lang='es'):
-    translator = Translator()
+    """
+    Translates a .po file from one language to another.
 
-    # read the .po file
+    :param input_file: Path to the input .po file.
+    :param output_file: Path to save the translated .po file.
+    :param src_lang: Source language (default is English).
+    :param dest_lang: Target language (default is Spanish).
+    """
+    # Initialize the translator
+    translator = Translator(from_lang=src_lang, to_lang=dest_lang)
+
+    # Read the .po file
     with open(input_file, 'r', encoding='utf-8') as file:
         lines = file.readlines()
 
-    # Variable to process the file
+    # Variables for processing the file
     new_lines = []
     current_msgid = None
 
     for line in lines:
         if line.startswith("msgid "):
+            # Store the msgid content for translation
             current_msgid = line[7:].strip().strip('"')
-            new_lines.append(line)  # Agregar la línea original
+            new_lines.append(line)  # Keep the original msgid
         elif line.startswith("msgstr ") and current_msgid:
-            if line.strip() == 'msgstr ""':  # Si no hay traducción existente
-                translation = translator.translate(current_msgid, src=src_lang, dest=dest_lang).text
-                new_lines.append(f'msgstr "{translation}"\n')  # Añadir traducción
+            if line.strip() == 'msgstr ""':  # If no translation exists
+                try:
+                    # Translate the msgid content
+                    translation = translator.translate(current_msgid)
+                    new_lines.append(f'msgstr "{translation}"\n')  # Add the translation
+                except Exception as e:
+                    # Handle translation errors
+                    print(f"Error translating '{current_msgid}': {e}")
+                    new_lines.append('msgstr ""\n')  # Leave empty if translation fails
             else:
-                new_lines.append(line)  # Copiar traducción existente
+                new_lines.append(line)  # Keep the existing translation
             current_msgid = None
         else:
-            new_lines.append(line)  # Copiar otras líneas sin cambios
+            new_lines.append(line)  # Keep other lines unchanged
 
-    # Save the translated file
+    # Save the translated .po file
     with open(output_file, 'w', encoding='utf-8') as file:
         file.writelines(new_lines)
 
-# Configure the file names
-input_po = "es_VE.po"  # Cambia esto por la ruta de tu archivo original
-output_po = "es_VE_translated.po"  # Archivo traducido
+    print(f"Translated file saved to: {output_file}")
 
-# Execute the translate !!
+# Set the input and output file names
+input_po = "es_VE.po"  # Change this to the path of your original file
+output_po = "es_VE_translated.po"  # Translated file name
+
+# Run the translation
 translate_po(input_po, output_po)
 
-print(f"The Translated file was saved on: {output_po}")
