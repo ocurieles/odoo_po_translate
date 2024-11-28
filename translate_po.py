@@ -3,11 +3,11 @@ from googletrans import Translator
 def translate_po(input_file, output_file, src_lang='en', dest_lang='es'):
     translator = Translator()
 
-    # Leer el archivo .po
+    # read the .po file
     with open(input_file, 'r', encoding='utf-8') as file:
         lines = file.readlines()
 
-    # Variables para procesar el archivo
+    # Variable to process the file
     new_lines = []
     current_msgid = None
 
@@ -25,15 +25,15 @@ def translate_po(input_file, output_file, src_lang='en', dest_lang='es'):
         else:
             new_lines.append(line)  # Copiar otras líneas sin cambios
 
-    # Guardar el archivo traducido
+    # Save the translated file
     with open(output_file, 'w', encoding='utf-8') as file:
         file.writelines(new_lines)
 
-# Configura los nombres de los archivos
+# Configure the file names
 input_po = "es_VE.po"  # Cambia esto por la ruta de tu archivo original
 output_po = "es_VE_translated.po"  # Archivo traducido
 
-# Ejecutar la traducción
+# Execute the translate !!
 translate_po(input_po, output_po)
 
-print(f"Archivo traducido guardado en: {output_po}")
+print(f"The Translated file was saved on: {output_po}")
