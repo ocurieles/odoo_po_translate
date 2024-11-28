@@ -30,6 +30,7 @@ def translate_po(input_file, output_file, src_lang='en', dest_lang='es'):
                 try:
                     # Translate the msgid content
                     translation = translator.translate(current_msgid)
+                    print(translation)
                     new_lines.append(f'msgstr "{translation}"\n')  # Add the translation
                 except Exception as e:
                     # Handle translation errors
